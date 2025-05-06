@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Literal
 
 import clickhouse_connect
 import polars as pl

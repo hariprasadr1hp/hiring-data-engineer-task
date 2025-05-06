@@ -12,7 +12,12 @@ def load_parquet_to_clickhouse(path: str, table: str):
         data = f.read()
 
     with httpx.Client() as client:
-        response = client.post(url, params=params, content=data)
+        response = client.post(
+            url,
+            params=params,
+            content=data,
+            auth=(settings.clickhouse_user, settings.clickhouse_password),
+        )
 
     if response.status_code != 200:
         raise Exception(f"[load] failed: {response.status_code} {response.text}")
