@@ -37,3 +37,9 @@ models:
         tests:
           - not_null
           - unique
+
+tests:
+  - clicks_gt_impressions:
+      description: "Anomaly check: clicks greater than actual impressions"
+      tags: ["anomaly"]
+      severity: warn

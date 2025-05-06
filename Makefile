@@ -38,6 +38,7 @@ clean:
 	rm -f junit.xml .coverage
 	rm -rf .mypy_cache/ .pytest_cache/ .ruff_cache/
 	rm -rf $(DBT_LOG_DIR) $(DBT_TARGET_DIR)
+	rm -rf data/*
 	@echo "Clean up complete."
 
 ## PYTHON TOOLING ##############################################################
@@ -73,7 +74,7 @@ postgres-seed:
 postgres-stats:
 	uv run python main.py stats
 
-## EXTRACT #####################################################################
+## ELT #####################################################################
 
 ## Run the extract pipeline (Polars: PostgreSQL → ClickHouse)
 extract:
@@ -88,7 +89,7 @@ etl-flow:
 
 ## Prefect Server
 prefect-serve:
-	$(PYTHON) cli.py prefect-serve
+	$(CLI) prefect-serve
 
 ## DBT #########################################################################
 
@@ -132,7 +133,7 @@ dbt-run:
 		--log-path $(DBT_LOG_DIR)
 
 ## Refresh dbt models
-dbt-refresh:
+dbt-run-full-refresh:
 	$(DBT) run \
 		--full-refresh \
 		--project-dir $(DBT_PROJECT_DIR) \
@@ -191,7 +192,7 @@ clickhouse-shell:
 
 .PHONY: \
   dbt-clean dbt-debug dbt-deps dbt-docs-generate dbt-docs-serve \
-  dbt-run dbt-seed dbt-test \
+  dbt-run dbt-run-full-refresh dbt-seed dbt-test \
   etl-flow extract \
   clickhouse-init clickhouse-clean clickhouse-reset clickhouse-shell clickhouse-stats \
   all help clean test lint format

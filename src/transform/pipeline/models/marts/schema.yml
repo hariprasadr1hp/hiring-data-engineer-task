@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: fct_campaign_ctr
+    description: "Campaign-level impressions, clicks, and click-through rate (CTR)"
+    columns:
+      - name: campaign_id
+        description: "ID of the campaign"
+        tests:
+          - not_null
+      - name: campaign_name
+        description: "Name of the campaign"
+        tests:
+          - not_null
+      - name: impressions
+        description: "Number of impressions for the campaign on the date"
+        tests:
+          - not_null
+      - name: clicks
+        description: "Number of clicks for the campaign on the date"
+        tests:
+          - not_null
+      - name: ctr
+        description: "Click-through rate (clicks / impressions)"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "ctr >= 0 and ctr <= 1"
+
+  - name: fct_daily_summary
+    description: "Aggregated campaign-level daily summary with average CTR"
+    columns:
+      - name: event_date
+        description: "The date for which the data is aggregated"
+        tests:
+          - not_null
+      - name: total_impressions
+        description: "Total impressions on that day"
+        tests:
+          - not_null
+      - name: total_clicks
+        description: "Total clicks on that day"
+        tests:
+          - not_null
+      - name: avg_ctr
+        description: "Average click-through rate on that day"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "ctr >= 0 and ctr <= 1"
+
