@@ -1,7 +1,12 @@
 ENV := dev
 SRC := src
+DBT_PROJECT_DIR := $(SRC)/transform/pipeline
+DBT_PROFILES_DIR := $(DBT_PROJECT_DIR)
+DBT_LOG_DIR := $(DBT_PROJECT_DIR)/logs
+DBT_TARGET_DIR := $(DBT_PROJECT_DIR)/target
 
 BLACK := uv run black
+DBT := uv run dbt
 PREFECT := uv run prefect
 PYTEST := uv run pytest
 PYTHON := uv run python
@@ -25,12 +30,14 @@ help:
 		} \
 	' $(MAKEFILE_LIST)
 
+## Remove DBT, and Python build artifacts
 clean:
 	@echo "Cleaning up..."
 	find . -name '__pycache__' -exec rm -rf {} +
 	find . -name '*.pyc' -exec rm -rf {} +
 	rm -f junit.xml .coverage
 	rm -rf .mypy_cache/ .pytest_cache/ .ruff_cache/
+	rm -rf $(DBT_LOG_DIR) $(DBT_TARGET_DIR)
 	@echo "Clean up complete."
 
 ## PYTHON TOOLING ##############################################################
@@ -83,6 +90,70 @@ etl-flow:
 prefect-serve:
 	$(PYTHON) cli.py prefect-serve
 
+## DBT #########################################################################
+
+## Remove dbt artifacts
+dbt-clean:
+	cd $(DBT_PROJECT_DIR) && $(DBT) clean
+
+## Debug dbt profiles/config
+dbt-debug:
+	$(DBT) debug \
+		--project-dir $(DBT_PROJECT_DIR) \
+		--profiles-dir $(DBT_PROFILES_DIR) \
+		--log-path $(DBT_LOG_DIR)
+
+## Install dbt dependencies
+dbt-deps:
+	$(DBT) deps \
+		--project-dir $(DBT_PROJECT_DIR) \
+		--profiles-dir $(DBT_PROFILES_DIR) \
+		--log-path $(DBT_LOG_DIR)
+
+## Generate dbt docs
+dbt-docs-generate:
+	$(DBT) docs generate \
+		--project-dir $(DBT_PROJECT_DIR) \
+		--profiles-dir $(DBT_PROFILES_DIR) \
+		--log-path $(DBT_LOG_DIR)
+
+## Serve dbt docs
+dbt-docs-serve:
+	$(DBT) docs serve \
+		--project-dir $(DBT_PROJECT_DIR) \
+		--profiles-dir $(DBT_PROFILES_DIR) \
+		--log-path $(DBT_LOG_DIR)
+
+## Run dbt models
+dbt-run:
+	$(DBT) run \
+		--project-dir $(DBT_PROJECT_DIR) \
+		--profiles-dir $(DBT_PROFILES_DIR) \
+		--log-path $(DBT_LOG_DIR)
+
+## Refresh dbt models
+dbt-refresh:
+	$(DBT) run \
+		--full-refresh \
+		--project-dir $(DBT_PROJECT_DIR) \
+		--profiles-dir $(DBT_PROFILES_DIR) \
+		--log-path $(DBT_LOG_DIR)
+
+
+## Load seed data
+dbt-seed:
+	$(DBT) seed \
+		--project-dir $(DBT_PROJECT_DIR) \
+		--profiles-dir $(DBT_PROFILES_DIR) \
+		--log-path $(DBT_LOG_DIR)
+
+## Test dbt models
+dbt-test:
+	$(DBT) test \
+		--project-dir $(DBT_PROJECT_DIR) \
+		--profiles-dir $(DBT_PROFILES_DIR) \
+		--log-path $(DBT_LOG_DIR)
+
 ## CLICKHOUSE ##################################################################
 
 ## Initialize clickhouse database
@@ -119,6 +190,8 @@ clickhouse-shell:
 ## DECLARE PHONY TARGETS #######################################################
 
 .PHONY: \
+  dbt-clean dbt-debug dbt-deps dbt-docs-generate dbt-docs-serve \
+  dbt-run dbt-seed dbt-test \
   etl-flow extract \
   clickhouse-init clickhouse-clean clickhouse-reset clickhouse-shell clickhouse-stats \
   all help clean test lint format

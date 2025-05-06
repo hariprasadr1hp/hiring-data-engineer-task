@@ -4,6 +4,8 @@ from src.core.settings import settings
 from src.extract import advertisers, campaigns, clicks, impressions
 from src.orchestrate.flows import etl
 
+settings.apply_dbt()
+
 app = typer.Typer()
 
 

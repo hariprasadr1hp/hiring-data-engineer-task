@@ -1,0 +1,39 @@
+version: 2
+models:
+  - name: stg_advertisers
+    description: "Staging model for advertiser table"
+    columns:
+      - name: advertiser_id
+        tests:
+          - not_null
+          - unique
+      - name: advertiser_name
+        tests:
+          - not_null
+
+  - name: stg_campaigns
+    description: "Staging model for campaign table"
+    columns:
+      - name: campaign_id
+        tests:
+          - not_null
+          - unique
+      - name: advertiser_id
+        tests:
+          - not_null
+
+  - name: stg_impressions
+    description: "Staging model for impressions"
+    columns:
+      - name: impression_id
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_clicks
+    description: "Staging model for clicks"
+    columns:
+      - name: click_id
+        tests:
+          - not_null
+          - unique

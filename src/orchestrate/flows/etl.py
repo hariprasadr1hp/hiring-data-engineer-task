@@ -45,6 +45,10 @@ def run_etl_flow():
         extract.submit(table).result()
         load.submit(table).result()
 
+    run_make("dbt-deps")
+    run_make("dbt-run")
+    run_make("dbt-docs-generate")
+
 
 if __name__ == "__main__":
     run_etl_flow()
