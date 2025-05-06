@@ -88,7 +88,7 @@ etl-flow:
 
 ## Prefect Server
 prefect-serve:
-	$(CLI) prefect-serve
+	docker compose -f src/compose/docker-compose.prefect.yml up -d
 
 ## Export results from mart_campaign_kpis using ClickHouse + Polars
 show-results:

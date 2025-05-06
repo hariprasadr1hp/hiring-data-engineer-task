@@ -54,13 +54,6 @@ def etl_flow():
     etl.run_etl_flow()
 
 
-@app.command("prefect-serve", help="Start Prefect Server")
-def serve_prefect():
-    settings.apply_prefect()
-    cmd = ["uv", "run", "--", "prefect", "server", "start"]
-    subprocess.run(cmd, check=True)
-
-
 @app.command(
     "export-results", help="Export results from mart_campaign_kpis using ClickHouse + Polars"
 )
