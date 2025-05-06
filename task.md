@@ -2,7 +2,7 @@
 
 ## Overview
 
-You are tasked with developing a data pipeline for an advertising platform. 
+You are tasked with developing a data pipeline for an advertising platform.
 
 The source data is stored in PostgreSQL (operational database) and needs to be transformed and loaded into ClickHouse (analytical database) for efficient reporting and KPI analysis.
 
@@ -19,9 +19,9 @@ Your challenge is to:
 
 ## Prerequisites
 
-* [uv](https://docs.astral.sh/uv/getting-started/installation/)
-* [docker](https://docs.docker.com/engine/install/)
-* [compose](https://docs.docker.com/compose/install/)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- [docker](https://docs.docker.com/engine/install/)
+- [compose](https://docs.docker.com/compose/install/)
 
 ## Setup & Environment
 
@@ -43,7 +43,7 @@ uv run python main.py batch
 The source PostgreSQL database has the following schema:
 
 - **advertiser**: Information about companies running ad campaigns
-- **campaign**: Ad campaigns configured with bid amounts and budgets  
+- **campaign**: Ad campaigns configured with bid amounts and budgets
 - **impressions**: Records of ads being displayed
 - **clicks**: Records of users clicking on ads
 
@@ -116,6 +116,7 @@ Your solution will be evaluated based on:
 9. Document your solution
 
 For local development:
+
 - View container status: `docker-compose ps`
 - View logs: `docker-compose logs`
 - Reset data: `uv run python main.py reset`

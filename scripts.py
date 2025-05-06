@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 """Command line scripts for the data-task project."""
 
-import os
-import sys
-import time
-import subprocess
 import argparse
+import subprocess
+import time
 
 
 def run_command(cmd):
@@ -109,7 +107,7 @@ def setup():
             break
         except subprocess.CalledProcessError:
             print(
-                f"PostgreSQL not ready yet, retrying in {retry_interval} seconds... ({i+1}/{max_retries})"
+                f"PostgreSQL not ready yet, retrying in {retry_interval} seconds... ({i + 1}/{max_retries})"
             )
             time.sleep(retry_interval)
     else:

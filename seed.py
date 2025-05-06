@@ -1,8 +1,8 @@
-import psycopg
+import datetime
 import os
 import random
-import datetime
-from datetime import date, timedelta, datetime
+
+import psycopg
 
 POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "localhost")
 POSTGRES_PORT = os.environ.get("POSTGRES_PORT", "5432")
@@ -40,7 +40,7 @@ def create_advertisers(conn, num_advertisers=2):
 def create_campaigns(conn, advertiser_ids, campaigns_per_advertiser=3):
     """Create campaigns for each advertiser."""
     campaign_ids = []
-    start_date = date.today()
+    start_date = datetime.date.today()
 
     with conn.cursor() as cur:
         for adv_id in advertiser_ids:
@@ -48,7 +48,7 @@ def create_campaigns(conn, advertiser_ids, campaigns_per_advertiser=3):
                 campaign_name = f"Campaign_{adv_id}_{i}"
                 bid = round(random.uniform(0.5, 5.0), 2)
                 budget = round(random.uniform(50, 500), 2)
-                end_date = start_date + timedelta(days=random.randint(7, 30))
+                end_date = start_date + datetime.timedelta(days=random.randint(7, 30))
 
                 cur.execute(
                     """
@@ -70,7 +70,7 @@ def create_impressions(conn, campaign_ids, impressions_per_campaign=100):
         for campaign_id in campaign_ids:
             # Create impressions distributed over the past week
             for _ in range(impressions_per_campaign):
-                timestamp = datetime.now() - timedelta(
+                timestamp = datetime.datetime.now() - datetime.timedelta(
                     days=random.randint(0, 7),
                     hours=random.randint(0, 23),
                     minutes=random.randint(0, 59),
@@ -97,7 +97,7 @@ def create_clicks(conn, campaign_ids, click_ratio=0.1):
             # Create clicks for a percentage of impressions
             for imp_id, imp_time in random.sample(impressions, int(len(impressions) * click_ratio)):
                 # Add a small delay after impression (1-120 seconds)
-                click_time = imp_time + timedelta(seconds=random.randint(1, 120))
+                click_time = imp_time + datetime.timedelta(seconds=random.randint(1, 120))
                 cur.execute(
                     """
                     INSERT INTO clicks (campaign_id, created_at)
@@ -130,7 +130,7 @@ def main(
         create_impressions(conn, campaign_ids, impressions_per_campaign)
 
         # Create clicks (based on impressions)
-        print(f"Creating clicks with approximately {click_ratio*100:.1f}% CTR...")
+        print(f"Creating clicks with approximately {click_ratio * 100:.1f}% CTR...")
         create_clicks(conn, campaign_ids, click_ratio)
 
         conn.commit()

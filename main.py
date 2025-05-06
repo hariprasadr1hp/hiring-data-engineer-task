@@ -2,12 +2,13 @@
 
 import argparse
 import sys
+
 from seed import (
-    get_connection,
     create_advertisers,
     create_campaigns,
-    create_impressions,
     create_clicks,
+    create_impressions,
+    get_connection,
 )
 
 
@@ -96,10 +97,10 @@ def show_stats(conn):
         print("\n=== Campaign Details ===")
         cur.execute(
             """
-            SELECT 
-                c.id, 
-                c.name, 
-                a.name as advertiser, 
+            SELECT
+                c.id,
+                c.name,
+                a.name as advertiser,
                 COUNT(DISTINCT i.id) as impressions,
                 COUNT(DISTINCT cl.id) as clicks
             FROM campaign c
@@ -186,7 +187,9 @@ def main():
 
             create_clicks(conn, [args.campaign_id], args.ratio)
             conn.commit()
-            print(f"Created clicks for campaign #{args.campaign_id} with {args.ratio*100:.1f}% CTR")
+            print(
+                f"Created clicks for campaign #{args.campaign_id} with {args.ratio * 100:.1f}% CTR"
+            )
 
         elif args.command == "batch":
             from seed import main as seed_main
