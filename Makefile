@@ -60,7 +60,6 @@ format:
 ## Sets up the project
 setup:
 	docker-compose up -d
-	db-seed
 
 ## Reset database data
 reset:
@@ -90,6 +89,10 @@ etl-flow:
 ## Prefect Server
 prefect-serve:
 	$(CLI) prefect-serve
+
+## Export results from mart_campaign_kpis using ClickHouse + Polars
+show-results:
+	$(CLI) export-results
 
 ## DBT #########################################################################
 
