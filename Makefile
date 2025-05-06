@@ -2,6 +2,7 @@ ENV := dev
 SRC := src
 
 BLACK := uv run black
+PREFECT := uv run prefect
 PYTEST := uv run pytest
 PYTHON := uv run python
 RUFF := uv run ruff
@@ -74,6 +75,14 @@ extract:
 	$(CLI) extract-clicks
 	$(CLI) extract-impressions
 
+## Run full ETL (Prefect flow: extract → transform)
+etl-flow:
+	$(CLI) etl-flow
+
+## Prefect Server
+prefect-serve:
+	$(PYTHON) cli.py prefect-serve
+
 ## CLICKHOUSE ##################################################################
 
 ## Initialize clickhouse database
@@ -110,6 +119,7 @@ clickhouse-shell:
 ## DECLARE PHONY TARGETS #######################################################
 
 .PHONY: \
+  etl-flow extract \
   clickhouse-init clickhouse-clean clickhouse-reset clickhouse-shell clickhouse-stats \
   all help clean test lint format
 
