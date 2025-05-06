@@ -17,3 +17,5 @@ models:
   adtech_pipeline:
     staging:
       +materialized: view
+    intermediate:
+      +materialized: table
