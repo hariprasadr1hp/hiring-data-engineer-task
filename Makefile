@@ -65,9 +65,43 @@ postgres-seed:
 postgres-stats:
 	uv run python main.py stats
 
+## CLICKHOUSE ##################################################################
+
+## Initialize clickhouse database
+clickhouse-init:
+	docker exec -i ch_analytics clickhouse-client < clickhouse/schemas/advertisers.sql
+	docker exec -i ch_analytics clickhouse-client < clickhouse/schemas/campaigns.sql
+	docker exec -i ch_analytics clickhouse-client < clickhouse/schemas/clicks.sql
+	docker exec -i ch_analytics clickhouse-client < clickhouse/schemas/impressions.sql
+
+## Drop all ClickHouse tables defined in schemas
+clickhouse-clean:
+	for file in clickhouse/schemas/*.sql; do \
+		table=$$(basename $$file .sql); \
+		echo "Dropping table: $$table"; \
+		docker exec -i ch_analytics clickhouse-client --query="drop table if exists $$table"; \
+	done
+
+## Truncate all ClickHouse tables (preserve schema)
+clickhouse-reset:
+	for file in clickhouse/schemas/*.sql; do \
+		table=$$(basename $$file .sql); \
+		echo "Truncating table: $$table"; \
+		docker exec -i ch_analytics clickhouse-client --query="truncate table if exists $$table"; \
+	done
+
+## Show Stats
+clickhouse-stats:
+	docker exec -i ch_analytics clickhouse-client < clickhouse/stats.sql
+
+## Interactive-Shell Mode
+clickhouse-shell:
+	docker exec -ti ch_analytics clickhouse-client
+
 ## DECLARE PHONY TARGETS #######################################################
 
 .PHONY: \
+  clickhouse-init clickhouse-clean clickhouse-reset clickhouse-shell clickhouse-stats \
   all help clean test lint format
 
 ################################################################################
