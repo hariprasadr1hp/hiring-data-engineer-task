@@ -65,6 +65,15 @@ postgres-seed:
 postgres-stats:
 	uv run python main.py stats
 
+## EXTRACT #####################################################################
+
+## Run the extract pipeline (Polars: PostgreSQL → ClickHouse)
+extract:
+	$(CLI) extract-advertisers
+	$(CLI) extract-campaigns
+	$(CLI) extract-clicks
+	$(CLI) extract-impressions
+
 ## CLICKHOUSE ##################################################################
 
 ## Initialize clickhouse database
